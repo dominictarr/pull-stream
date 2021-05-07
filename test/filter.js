@@ -59,3 +59,17 @@ test('inverse filter with regexp', function (t) {
   )
 })
 
+test('errors thrown in filters should end the stream', function (t) {
+  const error = new Error('Abort!')
+
+  pull(
+    pull.infinite(),
+    pull.filter(function () {
+      throw error
+    }),
+    pull.collect(function (err) {
+      t.deepEqual(err, error)
+      t.end()
+    })
+  )
+})

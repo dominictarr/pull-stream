@@ -12,8 +12,14 @@ module.exports = function filter (test) {
         loop = false
         sync = true
         read(end, function (end, data) {
-          if(!end && !test(data))
-            return sync ? loop = true : next(end, cb)
+          try {
+            if(!end && !test(data)) {
+              return sync ? loop = true : next(end, cb)
+            }
+          } catch (err) {
+            end = err
+          }
+
           cb(end, data)
         })
         sync = false
